@@ -33,7 +33,7 @@ test('renders ONE error message if user enters less then 5 characters into first
   render(<ContactForm />);
 
   // Act: Find the first name input and enter a name that is too short
-  const firstName = screen.queryByPlaceholderText(/edd/i);
+  const firstName = screen.getByPlaceholderText(/edd/i);
   userEvent.type(firstName, 'Carl');
   
   // Assert: Check that the first name length error appears on screen
@@ -69,9 +69,9 @@ test('renders ONE error message if user enters a valid first name and last name 
   render(<ContactForm />);
 
   // Act: Find and correctly fill in First Name and Last Name fields but not email and click submit button
-  const firstName = screen.queryByPlaceholderText(/edd/i);
+  const firstName = screen.getByPlaceholderText(/edd/i);
   userEvent.type(firstName, 'Austen');
-  const lastName = screen.queryByPlaceholderText(/edd/i);
+  const lastName = screen.getByPlaceholderText(/edd/i);
   userEvent.type(lastName, 'Allred');
   const submitButton = screen.getByRole('button');
   userEvent.click(submitButton);
@@ -85,6 +85,22 @@ test('renders ONE error message if user enters a valid first name and last name 
 });
 
 test('renders "email must be a valid email address" if an invalid email is entered', async () => {
+  // Arrange: Setup the component
+  render(<ContactForm />);
+
+  // Act: Corectly fills in first name and last name then enters an email that is not in the proper format
+  const firstName = screen.getByPlaceholderText(/edd/i);
+  userEvent.type(firstName, 'Austen');
+  const lastName = screen.getByPlaceholderText(/edd/i);
+  userEvent.type(lastName, 'Allred');
+  const emailInput = screen.getByPlaceholderText(/bluebill1049@hotmail.com/i);
+  userEvent.type(emailInput, 'Austen@gmail');
+  
+  // Assert: Check that the first name length error appears on screen
+  await waitFor( () => {
+    const emailErr = screen.queryByText(/email must be a valid email/i);
+    expect(emailErr).toBeInTheDocument();
+  });
     
 });
 
