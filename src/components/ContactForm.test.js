@@ -3,17 +3,28 @@ import {render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import ContactForm from './ContactForm';
+import * as rtl from '@testing-library/react';
+
 
 test('renders without errors', ()=>{
+  render(<ContactForm />);
     
 });
 
 test('renders the contact form header', ()=> {
-    
+  render(<ContactForm />);
+  const h1 = screen.getByText(/contact form/i);
+  expect(h1).toBeInTheDocument();
+  expect(h1).toBeTruthy();
+  expect(h1).toBeVisible();
 });
 
 test('renders ONE error message if user enters less then 5 characters into firstname.', async () => {
-    
+  render(<ContactForm />);
+  const firstName = screen.getByPlaceholderText(/edd/i);
+  userEvent.type(firstName, 'Carl');
+  const firstNameError = screen.getByText(/must have at least 5 characters/i);
+  expect(firstNameError).toBeInTheDocument();
 });
 
 test('renders THREE error messages if user enters no values into any fields.', async () => {
