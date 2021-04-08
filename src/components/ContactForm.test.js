@@ -36,7 +36,7 @@ test('renders ONE error message if user enters less then 5 characters into first
   const firstName = screen.getByPlaceholderText(/edd/i);
   userEvent.type(firstName, 'Carl');
   
-  // Assert: Check that the first name length error appears on screen
+  // Assert: An error will render for the invalid length of the first name field
   await waitFor( () => {
     const firstNameErr = screen.queryByText(/must have at least 5 characters/i);
     expect(firstNameErr).toBeInTheDocument();
@@ -52,7 +52,7 @@ test('renders THREE error messages if user enters no values into any fields.', a
   const submitButton = screen.getByRole('button');
   userEvent.click(submitButton);
 
-  // Assert: an error will render for each of the first name, last name and email fields
+  // Assert: an error will render for each of the missing first name, last name and email fields
   await waitFor( () => {
     const firstNameErr = screen.queryByText(/must have at least 5 characters/i);
     expect(firstNameErr).toBeInTheDocument();
@@ -71,12 +71,12 @@ test('renders ONE error message if user enters a valid first name and last name 
   // Act: Find and correctly fill in First Name and Last Name fields but not email and click submit button
   const firstName = screen.getByPlaceholderText(/edd/i);
   userEvent.type(firstName, 'Austen');
-  const lastName = screen.getByPlaceholderText(/edd/i);
+  const lastName = screen.getByPlaceholderText(/burke/i);
   userEvent.type(lastName, 'Allred');
   const submitButton = screen.getByRole('button');
   userEvent.click(submitButton);
 
-  // Assert: an error will render for each of the first name, last name and email fields
+  // Assert: an error will render for the missing email field
   await waitFor( () => {
     const emailErr = screen.queryByText(/email must be a valid email/i);
     expect(emailErr).toBeInTheDocument();
@@ -91,12 +91,12 @@ test('renders "email must be a valid email address" if an invalid email is enter
   // Act: Corectly fills in first name and last name then enters an email that is not in the proper format
   const firstName = screen.getByPlaceholderText(/edd/i);
   userEvent.type(firstName, 'Austen');
-  const lastName = screen.getByPlaceholderText(/edd/i);
+  const lastName = screen.getByPlaceholderText(/burke/i);
   userEvent.type(lastName, 'Allred');
   const emailInput = screen.getByPlaceholderText(/bluebill1049@hotmail.com/i);
   userEvent.type(emailInput, 'Austen@gmail');
   
-  // Assert: Check that the first name length error appears on screen
+  // Assert: an error will render for invalid email format
   await waitFor( () => {
     const emailErr = screen.queryByText(/email must be a valid email/i);
     expect(emailErr).toBeInTheDocument();
@@ -105,6 +105,22 @@ test('renders "email must be a valid email address" if an invalid email is enter
 });
 
 test('renders "lastName is a required field" if an last name is not entered and the submit button is clicked', async () => {
+  // Arrange: Setup the component
+  render(<ContactForm />);
+
+  // Act: Find and correctly fill in First Name and Email fields but not Last Name and click submit button
+  const firstName = screen.getByPlaceholderText(/edd/i);
+  userEvent.type(firstName, 'Austen');
+  const emailInput = screen.getByPlaceholderText(/bluebill1049@hotmail.com/i);
+  userEvent.type(emailInput, 'austen@austenallred.com');
+  const submitButton = screen.getByRole('button');
+  userEvent.click(submitButton);
+
+  // Assert: an error will render for the missing last name field
+  await waitFor( () => {
+    const lastNameErr = screen.queryByText(/lastname is a required field/i);
+    expect(lastNameErr).toBeInTheDocument();
+  });
     
 });
 
