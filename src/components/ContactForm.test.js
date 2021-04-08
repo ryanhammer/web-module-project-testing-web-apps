@@ -3,7 +3,6 @@ import {render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import ContactForm from './ContactForm';
-import * as rtl from '@testing-library/react';
 
 
 test('renders without errors', ()=>{
