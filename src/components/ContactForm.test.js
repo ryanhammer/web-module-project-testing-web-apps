@@ -45,6 +45,22 @@ test('renders ONE error message if user enters less then 5 characters into first
 });
 
 test('renders THREE error messages if user enters no values into any fields.', async () => {
+  // Arrange: Setup the component
+  render(<ContactForm />);
+
+  // Act: Click submit button without filling in form fields
+  const submitButton = screen.getByRole('button');
+  userEvent.click(submitButton);
+
+  // Assert: an error will render for each of the first name, last name and email fields
+  await waitFor( () => {
+    const firstNameErr = screen.queryByText(/must have at least 5 characters/i);
+    expect(firstNameErr).toBeInTheDocument();
+    const lastNameErr = screen.queryByText(/lastname is a required field/i);
+    expect(lastNameErr).toBeInTheDocument();
+    const emailErr = screen.queryByText(/email must be a valid email/i);
+    expect(emailErr).toBeInTheDocument();
+  })
     
 });
 
