@@ -12,19 +12,36 @@ test('renders without errors', ()=>{
 });
 
 test('renders the contact form header', ()=> {
+  // Arrange
   render(<ContactForm />);
-  const h1 = screen.getByText(/contact form/i);
+
+  // Act
+  const h1 = screen.queryByText(/contact form/i);
+
+  //Assert header is in document
   expect(h1).toBeInTheDocument();
+
+  //Assert header is truthy
   expect(h1).toBeTruthy();
-  expect(h1).toBeVisible();
+
+  // Assert header has correct text content
+  expect(h1).toHaveTextContent('Contact Form');
 });
 
 test('renders ONE error message if user enters less then 5 characters into firstname.', async () => {
+  // Arrange: Setup the component
   render(<ContactForm />);
-  const firstName = screen.getByPlaceholderText(/edd/i);
+
+  // Act: Find the first name input and enter a name that is too short
+  const firstName = screen.queryByPlaceholderText(/edd/i);
   userEvent.type(firstName, 'Carl');
-  const firstNameError = screen.getByText(/must have at least 5 characters/i);
-  expect(firstNameError).toBeInTheDocument();
+  
+  // Assert: Check that the first name length error appears on screen
+  await waitFor( () => {
+    const firstNameErr = screen.queryByText(/must have at least 5 characters/i);
+    expect(firstNameErr).toBeInTheDocument();
+  })
+
 });
 
 test('renders THREE error messages if user enters no values into any fields.', async () => {
